@@ -8,9 +8,13 @@ var moment = require('moment');
 
 const app = express();
 const server = http.createServer(app);
+const corsOptions = {
+  origin: ['http://106.216.195.220:3000','http://localhost:3000'],
+  optionsSuccessStatus: 200,
+};
 const io = new Server(server, {
   cors: {
-    origin: '*',
+    origin: ['http://106.216.195.220:3000','http://localhost:3000'],
     methods: ['GET', 'POST'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true
@@ -26,9 +30,7 @@ const clickhouse = createClient({
   database: 'default',
 });
 
-app.use(cors({
-  origin: 'http://localhost:3001'
-}));
+app.use(cors(corsOptions));
 
 app.get('/', (req, res) => {
   res.send('Hello World!');
