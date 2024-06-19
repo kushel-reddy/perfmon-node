@@ -42,35 +42,35 @@ app.get('/', (req, res) => {
 });
 
 const fetchMetricsSince = async (startTime) => {
-  // const query = `
-  //     SELECT 
-  //         toUnixTimestamp(timestamp) AS interval,
-  //         CPU, system, usr, wait, guest, Command
-  //     FROM 
-  //         pidstat_data 
-  //     WHERE 
-  //         toUnixTimestamp(timestamp) > ${startTime} 
-  //     ORDER BY toUnixTimestamp(timestamp) ASC
-  // `;
-
   const query = `
-    SELECT 
-        toUnixTimestamp(intDiv(toUnixTimestamp(timestamp), 60) * 60) AS interval,
-        avg(CPU) AS CPU, 
-        avg(system) AS system, 
-        avg(usr) AS usr, 
-        avg(wait) AS wait, 
-        avg(guest) AS guest, 
-        Command
-    FROM 
-        pidstat_data 
-    WHERE 
-        toUnixTimestamp(timestamp) > ${startTime} 
-    GROUP BY 
-        Command, toUnixTimestamp(timestamp)
-    ORDER BY 
-        toUnixTimestamp(timestamp) ASC
+      SELECT 
+          toUnixTimestamp(timestamp) AS interval,
+          CPU, system, usr, wait, guest, Command
+      FROM 
+          pidstat_data 
+      WHERE 
+          toUnixTimestamp(timestamp) > ${startTime} 
+      ORDER BY toUnixTimestamp(timestamp) ASC
   `;
+
+  // const query = `
+  //   SELECT 
+  //       toUnixTimestamp(intDiv(toUnixTimestamp(timestamp), 60) * 60) AS interval,
+  //       avg(CPU) AS CPU, 
+  //       avg(system) AS system, 
+  //       avg(usr) AS usr, 
+  //       avg(wait) AS wait, 
+  //       avg(guest) AS guest, 
+  //       Command
+  //   FROM 
+  //       pidstat_data 
+  //   WHERE 
+  //       toUnixTimestamp(timestamp) > ${startTime} 
+  //   GROUP BY 
+  //       Command, toUnixTimestamp(timestamp)
+  //   ORDER BY 
+  //       toUnixTimestamp(timestamp) ASC
+  // `;
   const rows = await clickhouse.query({
     query: query,
     format: 'JSONEachRow',
