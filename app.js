@@ -65,6 +65,8 @@ io.on('connection', (socket) => {
   console.log('New client connected');
   let startTime = moment().unix();
 
+  console.log("startTime", startTime);
+
   const fetchInitialMetrics = async () => {
     const initialMetrics = await fetchMetricsSince(startTime);
     socket.emit('metrics', initialMetrics);
