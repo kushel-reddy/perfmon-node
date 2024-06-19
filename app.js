@@ -42,15 +42,34 @@ app.get('/', (req, res) => {
 });
 
 const fetchMetricsSince = async (startTime) => {
+  // const query = `
+  //     SELECT 
+  //         toUnixTimestamp(timestamp) AS interval,
+  //         CPU, system, usr, wait, guest, Command
+  //     FROM 
+  //         pidstat_data 
+  //     WHERE 
+  //         toUnixTimestamp(timestamp) > ${startTime} 
+  //     ORDER BY toUnixTimestamp(timestamp) ASC
+  // `;
+
   const query = `
-      SELECT 
-          toUnixTimestamp(timestamp) AS interval,
-          CPU, system, usr, wait, guest, Command
-      FROM 
-          pidstat_data 
-      WHERE 
-          toUnixTimestamp(timestamp) > ${startTime} 
-      ORDER BY toUnixTimestamp(timestamp) ASC
+    SELECT 
+        toUnixTimestamp(intDiv(toUnixTimestamp(timestamp), 60) * 60) AS interval,
+        avg(CPU) AS avgCPU, 
+        avg(system) AS avgSystem, 
+        avg(usr) AS avgUsr, 
+        avg(wait) AS avgWait, 
+        avg(guest) AS avgGuest, 
+        groupArray(Command) AS commands
+    FROM 
+        pidstat_data 
+    WHERE 
+        toUnixTimestamp(timestamp) > ${startTime} 
+    GROUP BY 
+        interval
+    ORDER BY 
+        interval ASC
   `;
   const rows = await clickhouse.query({
     query: query,
