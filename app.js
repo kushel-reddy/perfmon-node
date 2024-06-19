@@ -29,7 +29,6 @@ const io = new Server(server, {
 const port = 3000;
 
 const clickhouse = createClient({
-  // url: 'http://localhost:8123',
   url: 'http://ec2-13-233-250-35.ap-south-1.compute.amazonaws.com:8123',
   username: 'default',
   password: '',
@@ -115,7 +114,7 @@ app.post('/metrics', async (req, res) => {
     GROUP BY 
       Command, toStartOfMinute(timestamp) 
     ORDER BY 
-      Command, toStartOfMinute(timestamp)
+      toStartOfMinute(timestamp)
   `);
 
   try {
