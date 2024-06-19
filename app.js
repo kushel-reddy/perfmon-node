@@ -61,13 +61,13 @@ const fetchMetricsSince = async (startTime) => {
         avg(usr) AS usr, 
         avg(wait) AS wait, 
         avg(guest) AS guest, 
-        Command AS Command
+        Command
     FROM 
         pidstat_data 
     WHERE 
         toUnixTimestamp(timestamp) > ${startTime} 
     GROUP BY 
-        toUnixTimestamp(timestamp)
+        Command, toUnixTimestamp(timestamp)
     ORDER BY 
         toUnixTimestamp(timestamp) ASC
   `;
