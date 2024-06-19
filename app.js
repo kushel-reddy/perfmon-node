@@ -56,12 +56,12 @@ const fetchMetricsSince = async (startTime) => {
   const query = `
     SELECT 
         toUnixTimestamp(intDiv(toUnixTimestamp(timestamp), 60) * 60) AS interval,
-        avg(CPU) AS avgCPU, 
-        avg(system) AS avgSystem, 
-        avg(usr) AS avgUsr, 
-        avg(wait) AS avgWait, 
-        avg(guest) AS avgGuest, 
-        groupArray(Command) AS commands
+        avg(CPU) AS CPU, 
+        avg(system) AS system, 
+        avg(usr) AS usr, 
+        avg(wait) AS wait, 
+        avg(guest) AS guest, 
+        Command AS Command
     FROM 
         pidstat_data 
     WHERE 
@@ -99,7 +99,7 @@ io.on('connection', (socket) => {
       socket.emit('metrics', newMetrics);
       startTime = newMetrics[newMetrics.length - 1].interval;
     }
-  }, 10000);
+  }, 1000);
 
   socket.on('disconnect', () => {
     clearInterval(intervalId);
