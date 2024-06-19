@@ -67,9 +67,9 @@ const fetchMetricsSince = async (startTime) => {
     WHERE 
         toUnixTimestamp(timestamp) > ${startTime} 
     GROUP BY 
-        interval
+      toUnixTimestamp(intDiv(toUnixTimestamp(timestamp), 60) * 60)
     ORDER BY 
-        interval ASC
+      toUnixTimestamp(timestamp) ASC
   `;
   const rows = await clickhouse.query({
     query: query,
