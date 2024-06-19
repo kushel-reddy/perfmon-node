@@ -76,7 +76,7 @@ io.on('connection', (socket) => {
     const newMetrics = await fetchMetricsSince(startTime);
     if (newMetrics.length > 0) {
       socket.emit('metrics', newMetrics);
-      startTime = moment(newMetrics[newMetrics.length - 1].timestamp).unix();
+      startTime = newMetrics[newMetrics.length - 1].interval;
     }
   }, 1000);
 
