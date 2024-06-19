@@ -98,8 +98,8 @@ app.post('/metrics', async (req, res) => {
     return res.status(400).send('Invalid or missing metric query parameter.');
   }
 
-  const startTimestamp = Math.floor(new Date(start).getTime() / 1000);
-  const endTimestamp = Math.floor(new Date(end).getTime() / 1000);
+  const startTimestamp = moment.utc(Math.floor(new Date(start).getTime() / 1000)).valueOf();
+  const endTimestamp = moment.utc(Math.floor(new Date(end).getTime() / 1000)).valueOf();
 
   const queries = metrics.map(metric => `
     SELECT 
