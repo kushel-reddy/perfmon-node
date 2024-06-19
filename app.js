@@ -80,7 +80,7 @@ io.on('connection', (socket) => {
       socket.emit('metrics', newMetrics);
       startTime = newMetrics[newMetrics.length - 1].interval;
     }
-  }, 1000);
+  }, 10000);
 
   socket.on('disconnect', () => {
     clearInterval(intervalId);
