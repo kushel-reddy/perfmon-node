@@ -56,6 +56,8 @@ const parsePidstatOutput = (output) => {
     const startIndex = 3;
     const currentDate = moment().format('YYYY-MM-DD');
 
+    console.log("currentDate", currentDate);
+
     for (let i = startIndex; i < lines.length; i++) {
         const fields = lines[i].trim().split(/\s+/);
         if (fields.length > 0 && fields[1] !== 'UID' && fields[0] !== 'Average:' && fields[0] !== '') {

@@ -4,7 +4,6 @@ const cors = require('cors');
 const http = require('http');
 const { Server } = require('socket.io');
 var moment = require('moment');
-
 const bodyParser = require('body-parser')
 
 
@@ -14,10 +13,14 @@ const server = http.createServer(app);
 
 app.use(bodyParser.json()) // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
+
 const corsOptions = {
   origin: ['http://106.216.195.220:3000','http://localhost:3000', 'http://localhost:3001', 'http://13.201.187.39'],
   optionsSuccessStatus: 200,
 };
+
+app.use(cors(corsOptions));
+
 const io = new Server(server, {
   cors: {
     origin: ['http://106.216.195.220:3000','http://localhost:3000', 'http://localhost:3001', 'http://13.201.187.39'],
@@ -26,6 +29,7 @@ const io = new Server(server, {
     credentials: true
   }
 });
+
 const port = 3000;
 
 const clickhouse = createClient({
@@ -33,12 +37,6 @@ const clickhouse = createClient({
   username: 'default',
   password: '',
   database: 'default',
-});
-
-app.use(cors(corsOptions));
-
-app.get('/', (req, res) => {
-  res.send('Hello World!');
 });
 
 const fetchMetricsSince = async (startTime) => {
@@ -53,24 +51,6 @@ const fetchMetricsSince = async (startTime) => {
       ORDER BY toUnixTimestamp(timestamp) ASC
   `;
 
-  // const query = `
-  //   SELECT 
-  //       toUnixTimestamp(intDiv(toUnixTimestamp(timestamp), 60) * 60) AS interval,
-  //       avg(CPU) AS CPU, 
-  //       avg(system) AS system, 
-  //       avg(usr) AS usr, 
-  //       avg(wait) AS wait, 
-  //       avg(guest) AS guest, 
-  //       Command
-  //   FROM 
-  //       pidstat_data 
-  //   WHERE 
-  //       toUnixTimestamp(timestamp) > ${startTime} 
-  //   GROUP BY 
-  //       Command, toUnixTimestamp(timestamp)
-  //   ORDER BY 
-  //       toUnixTimestamp(timestamp) ASC
-  // `;
   const rows = await clickhouse.query({
     query: query,
     format: 'JSONEachRow',
@@ -107,8 +87,8 @@ io.on('connection', (socket) => {
   });
 });
 
+
 app.post('/metrics', async (req, res) => {
-  console.log("req", req.body);
   const { start, end, metrics } = req.body;
   if (!start || !end) {
     return res.status(400).send('Missing start or end query parameters.');
