@@ -3,7 +3,7 @@ const { ClickHouse } = require('clickhouse');
 const moment = require('moment');
 
 const clickhouse = new ClickHouse({
-    url: 'http://172.31.32.81:8123',
+    url: 'http://172.31.46.109:8123',
     basicAuth: {
         username: 'default',
         password: '',
